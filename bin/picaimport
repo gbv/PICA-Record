@@ -1,15 +1,9 @@
 #!/usr/bin/perl
-
-=head1 NAME
-
-picaimport - Import or delete PICA+ records in a L<PICA::Store>
-
-=cut
+#PODNAME: picaimport
+#ABSTRACT: Import or delete PICA+ records in a L<PICA::Store>
 
 use strict;
 use warnings;
-
-our $VERSION = '0.27';
 
 =head1 SYNOPSIS
 
@@ -329,10 +323,6 @@ Import all files listed in C<newrecords> and delete imported files on success
 
   picaimport -from newrecords -move
 
-=head1 AUTHOR
+=cut
 
-Jakob Voss C<< jakob.voss@gbv.de >>
-
-=head1 LICENSE
-
-This script is published as Public Domain. Feel free to reuse as you like!
+=encoding utf8

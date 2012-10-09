@@ -1134,59 +1134,6 @@ sub picarecord {
     return PICA::Record->new( @_ );
 }
 
-=head1 DEPRECATED ALIASES
-
-=head2 main_record
-
-Alias for C<main>.
-
-=cut
-
-sub main_record {
-    warn 'PICA::Record::main_record is deprecated. use ::main instead!';
-    shift->main(@_);
-}
-
-=head2 delete_fields ( <tagspec(s)> )
-
-Alias for C<remove>.
-
-=cut
-
-sub delete_fields {
-    warn 'PICA::Record::delete_fields is deprecated. use ::remove instead!';
-    shift->remove(@_);
-}
-
-=head2 as_string ( [ %options ] )
-
-=head2 to_string ( [ %options ] )
-
-Alias for C<as_string>.
-
-=cut
-
-sub to_string {
-    warn 'PICA::Record::to_string is deprecated. use ::string instead!';
-    shift->string( @_ ); 
-}
-
-sub as_string {
-    warn 'PICA::Record::to_string is deprecated. use ::string instead!';
-    shift->string( @_ ); 
-}
-
-=head2 all_fields
-
-Alias for C<fields>.
-
-=cut
-
-sub all_fields() {
-    warn 'PICA::Record::all_fields is deprecated. Use ::fields instead';
-    shift->fields(@_);
-}
-
 1;
 
 =head1 SEE ALSO

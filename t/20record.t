@@ -383,7 +383,7 @@ if (1) {
   PICA::Parser->parsefile( "$files/winibwsave.example", Record => sub { $record = shift; } );
   isa_ok( $record, 'PICA::Record' );
   # test bibliographic()
-  my $main = $record->main_record();
+  my $main = $record->main();
   isa_ok( $main, 'PICA::Record' );
 }
 # TODO: test to_xml

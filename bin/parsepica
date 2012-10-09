@@ -1,14 +1,7 @@
 #!/usr/bin/perl
-
+#PODNAME: parsepica
+#ABSTRACT: fetch, parse and transform PICA+ data
 use strict;
-
-=head1 NAME
-
-parsepica - fetch, parse and transform PICA+ data
-
-=cut
-
-our $VERSION = '0.30';
 
 =head1 SYNOPSIS
 
@@ -389,6 +382,6 @@ The limit parameter should also be implemented for other sources but SRU and
 an offset parameter would be useful. Fetching records via other protocols but
 SRU has not been tested. The statistics method can be improved a lot.
 
-=head1 AUTHOR
+=cut
 
-Jakob Voss C<< jakob.voss@gbv.de >>
+=encoding utf8

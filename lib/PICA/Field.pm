@@ -69,7 +69,6 @@ With a string of readable PICA+ data:
 
 =cut
 
-
 sub new($) {
     my $class = shift;
     $class = ref($class) || $class;
@@ -601,7 +600,7 @@ sub size {
     return @{$self->{_subfields}} / 2;
 }
 
-=head2 as_string ( [ %params ] )
+=head2 string ( [ %params ] )
 
 Returns a pretty string for printing.
 
@@ -647,24 +646,6 @@ sub string {
            $self->{_tag} . $occ . ' ' .
            $startsubfield . join( $startsubfield, @subs ) .
            $endfield;
-}
-
-=head2 as_string ( [ %options ] )
-
-=head2 to_string ( [ %options ] )
-
-Alias for C<as_string>.
-
-=cut
-
-sub to_string {
-    warn 'PICA::Field::to_string is deprecated. use ::string instead!';
-    shift->string( @_ ); 
-}
-
-sub as_string {
-    warn 'PICA::Field::as_string is deprecated. use ::string instead!';
-    shift->string( @_ ); 
 }
 
 # Write the field to a L<XML::Writer> object

@@ -1,15 +1,9 @@
 #!/usr/bin/perl
-
-=head1 NAME
-
-winibw2pica - convert WinIBW PICA+ download to valid PICA+
-
-=cut
+#PODNAME: winibw2pica
+#ABSTRACT: convert WinIBW PICA+ download to valid PICA+
 
 use strict;
 use warnings;
-
-our $VERSION = '0.33';
 
 use PICA::Parser qw(parsedata);
 use PICA::Field qw(parse_pp_tag);
@@ -157,10 +151,6 @@ L<http://www.gbv.de/wikis/cls/WinIBW3>.
 winib2wpica -prettyxml mydownload.txt
 winib2wpica -utf8 -out mydownload.pica mydownload.txt
 
-=head1 AUTHOR
+=cut
 
-Jakob Voss C<< jakob.voss@gbv.de >>
-
-=head1 LICENSE
-
-This script is published as Public Domain. Feel free to reuse as you like!
+=encoding utf8
