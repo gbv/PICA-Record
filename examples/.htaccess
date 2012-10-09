@@ -1,0 +1,7 @@
+# RewriteEngine on
+# Options +ExecCGI
+
+# WSDL file
+AddType application/xml .wsdl
+
+AddHandler cgi-script .pl
