@@ -1,6 +1,7 @@
 0.584   2012-10-09
         - migrated to dist-zilla
         - removed deprecated methods
+        - fixed sorting/holdings
 0.583   2012-03-10
         - fixed sorting of level 2 fields
         - renamed all_fields to fields in PICA::Record

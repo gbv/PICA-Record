@@ -49,7 +49,7 @@ C<Collection> handler to parse files with multiple collections.
 
 use PICA::Field;
 use PICA::Record;
-use XML::SAX::ParserFactory;
+use XML::SAX::ParserFactory 1.01;
 use Carp qw(croak);
 
 =head1 PUBLIC METHODS

@@ -2,6 +2,7 @@ package PICA::Record;
 #ABSTRACT: Perl module for handling PICA+ records
 use strict;
 use utf8;
+use 5.10.0;
 
 use base qw(Exporter);
 our @EXPORT = qw(readpicarecord writepicarecord);
@@ -496,37 +497,60 @@ sub main {
 
 Get a list of local records (holdings, level 1 and 2) or the local record with
 given ILN. Returns an array of L<PICA::Record> objects or a single holding.
+This method also sorts level 1 and level 2 fields.
 
 =cut
 
 sub holdings {
-  my ($self, $iln) = @_;
+    my ($self, $iln) = @_;
 
-  my @holdings = ();
-  my @fields = ();
-  my $prevtag;
+    my %holdings = ();
+    my @fields = ();
+    my $prevtag;
+    my $curiln = '';
+    my @pending;
   
-  foreach my $f (@{$self->{_fields}}) {
-    next unless $f->tag =~ /^[^0]/;
+    foreach my $f (@{$self->{_fields}}) {
+        next if $f->tag =~ /^0/;
 
-    if ($f->tag =~ /^1/) {
-        if ($prevtag && $prevtag =~ /^2/) {
-            if (@fields) {
-                my $h = PICA::Record->new(@fields);
-                push @holdings, $h unless $iln and $h->iln ne $iln;
+        if ($f->tag eq '101@' and defined $f->sf('a')) {
+            $curiln = $f->sf('a');
+            $holdings{$curiln} //= [ ];
+            if (@pending) {
+                push @{ $holdings{$curiln} }, @pending;
+                @pending = ();
             }
-            @fields = ();
+            push @{ $holdings{$curiln} }, $f;
+        } elsif( $curiln eq '' ) {
+            push @pending, $f;
+        } else {
+            push @{ $holdings{$curiln} }, $f;
         }
+
+        push @fields, $f;
+        $prevtag = $f->tag;
     }
 
-    push @fields, $f;
-    $prevtag = $f->tag;
-  }
-  if (@fields) {
-      my $h = PICA::Record->new(@fields);
-      push @holdings, $h unless $iln and $h->iln ne $iln;
-  }
-  return $iln ? $holdings[0] : @holdings;
+    push @{ $holdings{$curiln} }, @pending if @pending;
+
+    if ($iln) {
+        %holdings = ($iln => $holdings{$iln});
+        %holdings = () unless $holdings{$iln};
+    }
+
+    foreach my $iln (keys %holdings) {
+        @{$holdings{$iln}} = sort {
+            my ($ta,$tb) = ($a->tag, $b->tag);
+            $ta =~ s{^(2...)/(..)$}{2$2$1};
+            $tb =~ s{^(2...)/(..)$}{2$2$1};
+            $ta cmp $tb;
+        } @{$holdings{$iln}};
+    }
+
+    my @h =  sort { ($a->iln // '0') <=> ($b->iln // '0') } 
+            map { PICA::Record->new( @$_ ) } CORE::values(%holdings);
+
+    return $iln ? $h[0] : @h;
 }
 
 =head2 items
@@ -828,26 +852,16 @@ Sort the fields of this records. Respects level 0, 1, and 2.
 sub sort {
     my $self = shift;
 
-    my $main = $self->main;
+    my $main     = $self->main;
+    my @holdings = $self->holdings;
 
-    # first holdings with ILN (sorted by ILN), then holdings without ILN
-    my @holdings = sort { $a->iln <=> $b->iln }
-                   grep { defined $_->iln } 
-                   $self->holdings;
-    my @hx = grep { not defined $_->iln } $self->holdings;
-    push @holdings, @hx if @hx;
-
-    # level 0
     @{$self->{_fields}} = sort { $a->tag cmp $b->tag } @{$main->{_fields}};
 
     foreach my $h ( @holdings ) {
-        push @{$self->{_fields}}, sort {
-            my ($ta,$tb) = ($a->tag, $b->tag);
-            $ta =~ s{^(2...)/(..)$}{2$2$1};
-            $tb =~ s{^(2...)/(..)$}{2$2$1};
-            $ta cmp $tb;
-        } @{$h->{_fields}};
+        push @{$self->{_fields}}, @{$h->{_fields}};
     }
+
+    $self;
 }
 
 =head2 add_headers ( [ %options ] )

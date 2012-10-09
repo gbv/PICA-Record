@@ -1,5 +1,3 @@
-#!perl -Tw
-
 use strict;
 use utf8;
 
@@ -292,24 +290,24 @@ is_deeply( \@epns, [917400194,923091475,923091483,923091491], "epn() as array" )
 
 ### holdings and items
 
+$record = PICA::Record->new("003\@ \$0123\n021A \$aHello");
+my @holdings = $record->holdings;
+is scalar @holdings, 0;
+
 $record = PICA::Record->new( IO::File->new("$files/bgb.example") );
 
-my @holdings = $record->holdings();
-is( scalar @holdings, 56, 'holdings' );
+@holdings = $record->holdings();
+is scalar @holdings, 56, 'holdings';
+
+my $iln = $holdings[0]->iln;
+is $record->holdings($iln)->string, $holdings[0]->string, "ILN: $iln";
 
 my @copies = $record->items();
 is( scalar @copies, 353, 'items' );
 
 is( scalar $holdings[0]->items(), 1, "items (1)");
 is( scalar $holdings[4]->items(), 2, "items (2)");
-is( scalar $holdings[5]->items(), 26, "items (26)");
-
-foreach my $h (@holdings) {
-    my $iln = $h->iln;
-    my $h2 = $record->holdings( $iln );
-    is( "$h2", "$h", "ILN: $iln" );
-    last; # we could do more...
-}
+is( scalar $record->holdings('21')->items, 26, "items (26)");
 
 
 $record = readpicarecord( "$files/holdings.pica" );
@@ -344,36 +342,6 @@ $r2 = pmap { PICA::Field->new( $_->tag, 'x' => $_->sf('ax') ) } $record;
 
 $fields[1] = $fields[4] = 'x';
 is_deeply( $r2, PICA::Record->new(@fields) , 'pmap' );
-
-
-### sort
-$r = PICA::Record->new(
-  '101@','a'=>'123',
-  '203@/02','0'=>'543210',
-  '209A/01','a'=>'jur',
-  '203@/01','0'=>'123456',
-  '021A','a' => 'bla',
-  '101@','a'=>'12',
-  '208@/01','a'=>'01-12-09',
-  '203@/01','0'=>'666666',
-  '102A','0'=>'x','a'=>'11',
-);
-$r->sort;
-
-$r2 = PICA::Record->new(<<'PICA');
-021A $abla
-101@ $a12
-203@/01 $0666666
-208@/01 $a01-12-09
-101@ $a123
-203@/01 $0123456
-209A/01 $ajur
-203@/02 $0543210
-102A $0x$a11
-PICA
-
-is( "$r", "$r2", "sort" );
-
 
 __END__
 

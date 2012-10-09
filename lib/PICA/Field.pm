@@ -182,6 +182,7 @@ sub parse {
         $code = shift @sfields;
         $code = substr($code, 1);
         $value = shift @sfields;
+        next unless defined $value;
         $value =~ s/\$\$/\$/g if $sf eq '$';
         $value =~ s/\s+/ /gm;
         push(@subfields, ($code, $value));
