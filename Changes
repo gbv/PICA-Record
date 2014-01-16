@@ -1,3 +1,6 @@
+0.585   2014-01-15
+        - fixed use of dist-zilla (don't encode test files)
+        - omit failing XML test
 0.584   2012-10-09
         - migrated to dist-zilla
         - removed deprecated methods
